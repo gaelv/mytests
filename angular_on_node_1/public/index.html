@@ -1,0 +1,87 @@
+<html ng-app="angularjs-starter">
+<head>
+	<meta charset="utf-8" />
+	<title>Page de comparaison de frameworks js pour VIF</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+
+	<style type="text/css">
+		em{font-style: italic;font-size: medium;text-align: left;}
+		strong{font-style: bold;font-size: large;text-align: right;}
+		span{font-size: small;text-align:left;}
+		table{ border-collapse: collapse;}
+		td{border: solid;border-width: 1px}
+		th.title{background: #DDD;border: solid;border-width: 1px}
+		button {
+		   background: #FFF;
+		   -webkit-border-radius: 11px;
+		   -moz-border-radius: 11px;
+		   border-radius: 11px;
+		   color: #000;
+		   font-size: 12px;
+		   text-decoration: none;
+		   vertical-align: middle;
+		   boorder
+		   }
+		button:hover {
+		   background: #DDD;
+		   color: #000;
+		   }
+
+	</style>
+  <script src="./js/angular.js"></script>
+  <script src="./js/ui-bootstrap-0.3.0.min"></script>
+  <script src="./js/controller.js"></script>
+</head>
+<body ng-controller="EvaluationListCtrl">
+<h2>Ceci est la comparaison des frameworks HTML5 :</h2>
+<div id="app">	</div>
+
+    <table class="table">	
+        <thead>	
+    <tr>	
+        <th>	</th>
+        <th class="title">Relevance</th>
+        <th class="title">Angular</th>
+        <th class="title">Backbone</th>
+        <th class="title">Ext-JS (Sensha)</th>
+        <th class="title">GXT (Sensha)</th>
+    </tr>
+    </thead>
+    <tbody>	
+            <tr ng-repeat="item in items">	
+                <td><em>{{item.type}}</em> - <strong>{{item.name}}</strong><br/><span>{{item.commentaire}}</span></td>
+                <td><button ng-click="minusOne(item, 'rel')">-</button> <button ng-click="plusOne(item, 'rel')">+</button><strong>{{item.rel}}</strong></td>
+                <td><button ng-click="minusOne(item, 'ang')">-</button> <button ng-click="plusOne(item, 'ang')">+</button><strong>{{item.ang}}</strong></td>
+                <td><button ng-click="minusOne(item, 'bb')">-</button> <button ng-click="plusOne(item, 'bb')">+</button><strong>{{item.bb}}</strong></td>
+                <td><button ng-click="minusOne(item, 'extjs')">-</button> <button ng-click="plusOne(item,  'extjs')">+</button><strong>{{item.extjs}}</strong></td>
+               <td><button ng-click="minusOne(item, 'gxt')">-</button> <button ng-click="plusOne(item, 'gxt')">+</button><strong>{{item.gxt}}</strong></td>
+            </tr>
+       </tbody>
+        <tfoot>	
+            <td><strong>Total</strong></td>
+            <td>	</td>
+            <td>	<strong>	{{totalang}}</strong></td>
+            <td><strong>		{{totalbb}}</strong></td>
+            <td><strong>		{{totalextjs}}</strong></td>
+            <td><strong>		{{totalgxt}}</strong></td>
+            
+        </tfoot>
+
+    </table>
+    
+    <input type="text" ng-model="name" bs-typeahead="typeaheadFn">
+    
+    <button ng-click="generateValues()">Telechargement des valeurs</button>
+    <button ng-click="init()">Réinitiialisation des valeurs</button>
+
+    <button ng-click="postDatas()">post des valeurs</button>
+    <strong>{{message}}</strong>
+<p>
+<span>VIF, Juin 2013, Etude pour VIF Web</span>
+</p>
+
+
+
+
+</body>
+</html>

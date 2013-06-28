@@ -1,0 +1,117 @@
+<<html>
+<head>
+	<script type="text/javascript">var Item = can.Observe({
+    }, {
+       ang_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('ang');
+    	   }),
+        bb_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('bb');
+    	   }),
+        
+    	   can_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('can');
+    	   }),
+        
+    	   emb_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('emb');
+    	   })
+       });
+
+var Control = can.Control({
+  'init': function( element , options ) {
+      var self = this;
+      
+      this.items = new Item.List([]);
+      
+      this.totals = new can.Observe({
+          ang: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.ang_(); }, 0);
+          }) ,
+          bb: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.bb_(); }, 0);
+          }) ,
+          can: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.can_(); }, 0);
+          }) ,
+          emb: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.emb_(); }, 0);
+          }) 
+      });
+    
+    this.items.push(new Item({name: 'Features', rel: 1, ang: 5, bb: 2, can: 4, emb: 5}));
+    this.items.push(new Item({name: 'Flexibility', rel: 1, ang: 3, bb: 5, can: 4, emb: 3}));
+    this.items.push(new Item({name: 'Learning curve and documentation', rel: 1, ang: 2, bb: 4, can: 5, emb: 3}));
+    this.items.push(new Item({name: 'Developer productivity', rel: 1, ang: 4, bb: 2, can: 4, emb: 5}));
+    this.items.push(new Item({name: 'Community', rel: 1, ang: 4, bb: 5, can: 3, emb: 4}));
+    this.items.push(new Item({name: 'Ecosystem', rel: 1, ang: 4, bb: 5, can: 2, emb: 4}));
+    this.items.push(new Item({name: 'Size', rel: 1, ang: 4, bb: 5, can: 5, emb: 2}));
+    this.items.push(new Item({name: 'Performance', rel: 1, ang: 3, bb: 4, can: 5, emb: 4}));
+    this.items.push(new Item({name: 'Maturity', rel: 1, ang: 4, bb: 5, can: 4, emb: 3}));
+    this.items.push(new Item({name: 'Memory leak safety', rel: 1, ang: 5, bb: 3, can: 5, emb: 5}));
+      this.items.push(new Item({name: 'Testability', rel: 1, ang: 5, bb: 4, can: 4, emb: 4}));
+      
+    
+      $(this.element).append(can.view('template', {items: this.items, totals: this.totals}));
+  },
+    
+    '.btn_more click': function (el, ev) {
+        var item = can.data(el.closest('tr'), 'item');
+        item.attr('rel', item.rel + 1);
+    },
+    '.btn_less click': function (el, ev) {
+        var item = can.data(el.closest('tr'), 'item');
+    	var n = Math.max(item.rel - 1, 0);
+        item.attr('rel', n);
+    }
+})
+
+$(function () {
+   new Control('#app');    
+});
+</script>
+	<title></title>
+</head>
+<body>
+<div id="app">	</div>
+
+<script id="template" type="text/mustache">
+
+    <table class="table">	
+        <thead>	
+    <tr>	
+        <th>	</th>
+        <th>Relevance</th>
+        <th>Angular</th>
+        <th>Backbone</th>
+        <th>CanJS</th>
+        
+        <th>Ember</th>
+    </tr>
+    </thead>
+    <tbody>	
+            {{#items}}
+            <tr {{data 'item'}}>	
+                <td>{{name}}</td>
+                <td><button class="btn_less">-</button> <button class="btn_more">+</button>  {{rel}}</td>
+                <td>{{ang_}}	</td>
+                <td>{{bb_}}	</td>
+                <td>{{can_}}</td>
+               <td>{{emb_}}</td>
+            </tr>
+          {{/items}}
+       </tbody>
+        <tfoot>	
+            <td>	</td>
+            <td>	</td>
+            <td>	<strong>	{{totals.ang}}</strong></td>
+            <td><strong>		{{totals.bb}}</strong></td>
+            <td><strong>		{{totals.can}}</strong></td>
+            <td><strong>		{{totals.emb}}</strong></td>
+            
+        </tfoot>
+    </table>
+</script>
+
+</body>
+</html>
