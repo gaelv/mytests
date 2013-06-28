@@ -1,0 +1,177 @@
+<html >
+<head>
+	<meta charset="utf-8" />
+	<title>Page de comparaison de frameworks js pour VIF</title>
+	<style type="text/css">
+		em{font-style: italic;font-size: medium;text-align: left;}
+		strong{font-style: bold;font-size: large;text-align: right;}
+		span{font-size: small;text-align:left;}
+		table{ border-collapse: collapse;}
+		td{border: solid;border-width: 1px}
+		th.title{background: #DDD;border: solid;border-width: 1px}
+		button {
+		   background: #FFF;
+		   -webkit-border-radius: 11px;
+		   -moz-border-radius: 11px;
+		   border-radius: 11px;
+		   color: #000;
+		   font-size: 12px;
+		   text-decoration: none;
+		   vertical-align: middle;
+		   boorder
+		   }
+		button:hover {
+		   background: #DDD;
+		   color: #000;
+		   }
+	</style>
+</head>
+<body>
+<h2>Ceci est la comparaison des frameworks HTML5 :</h2>
+<div id="app">	</div>
+<span>VIF, Juin 2013, Etude pour VIF Web</span>
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://canjs.com/release/1.1.5/can.jquery.js"></script>
+<script src="http://canjs.com/release/latest/can.view.mustache.js"></script>
+<script src="http://underscorejs.org/underscore.js"></script>
+
+<script id="template" type="text/mustache">
+
+    <table class="table">	
+        <thead>	
+    <tr>	
+        <th>	</th>
+        <th class="title">Relevance</th>
+        <th class="title">Angular</th>
+        <th class="title">Backbone</th>
+        <th class="title">Ext-JS (Sensha)</th>
+        <th class="title">GXT (Sensha)</th>
+    </tr>
+    </thead>
+    <tbody>	
+            {{#items}}
+            <tr {{data 'item'}}>	
+                <td><em>{{type}}</em> - <strong>{{name}}</strong><br/><span>{{commentaire}}</span></td>
+                <td><button class="btn_less">-</button> <button class="btn_more">+</button>  {{rel}}</td>
+                <td><button class="btn_less_ang">-</button> <button class="btn_more_ang">+</button>{{ang}}</td>
+                <td><button class="btn_less_bb">-</button> <button class="btn_more_bb">+</button>{{bb}}</td>
+                <td><button class="btn_less_extjs">-</button> <button class="btn_more_extjs">+</button>{{extjs}}</td>
+               <td><button class="btn_less_gxt">-</button> <button class="btn_more_gxt">+</button>{{gxt}}</td>
+            </tr>
+          {{/items}}
+       </tbody>
+        <tfoot>	
+            <td><strong>Total</strong></td>
+            <td>	</td>
+            <td>	<strong>	{{totals.ang}}</strong></td>
+            <td><strong>		{{totals.bb}}</strong></td>
+            <td><strong>		{{totals.extjs}}</strong></td>
+            <td><strong>		{{totals.gxt}}</strong></td>
+            
+        </tfoot>
+    </table>
+</script>
+
+
+
+<script type="text/javascript">
+var Item = can.Observe({
+    }, {
+	       ang_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('ang');
+    	   }),
+    	   bb_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('bb');
+    	   }),
+        
+    	   extjs_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('extjs');
+    	   }),
+        
+    	   gxt_: can.compute(function(){
+      	   	return this.attr('rel') * this.attr('gxt');
+    	   })
+       });
+
+var Control = can.Control({
+  'init': function( element , options ) {
+      var self = this;
+      
+      this.items = new Item.List([]);
+      
+      this.totals = new can.Observe({
+          ang: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.ang_(); }, 0);
+          }) ,
+          bb: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.bb_(); }, 0);
+          }) ,
+          extjs: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.extjs_(); }, 0);
+          }) ,
+          gxt: can.compute(function () {
+              	return _.reduce(self.items, function(memo, item){ return memo + item.gxt_(); }, 0);
+          }) 
+      });
+    
+    this.items.push(new Item({name: 'Editeur du Framework',type:'Environnement', commentaire: 'Quel va être le support de l éditeur, va t il être solide et apporter une valeur ajoutée?', rel: 2, ang: 3, bb: 3, extjs: 4, gxt: 4}));
+    this.items.push(new Item({name: 'Maturité et Perennité de la solution',type:'Environnement', commentaire: 'Que connait on de la stabilité de la solution et de sa projection à 3-5 ans ?', rel: 2, ang: 3, bb: 3, extjs: 4, gxt: 4}));
+    this.items.push(new Item({name: 'Documentation',type:'Environnement', commentaire: 'Qualité et quantité de documentation pour déveloper.', rel: 3, ang: 4, bb: 2, extjs: 5, gxt: 3}));
+    this.items.push(new Item({name: 'Popularité, Communauté',type:'Environnement', commentaire: 'Nombre de ressources sur le net et réactivité de la communauté.', rel: 1, ang: 3, bb: 3, extjs: 3, gxt: 2}));
+    	<!--?? sur Backbone-->
+    this.items.push(new Item({name: 'Prix',type:'Environnement', commentaire: 'Cout d acquisition. Peu important car pas au runtime mais au développeur', rel: 1, ang: 5, bb: 5, extjs: 4, gxt: 2}));
+    this.items.push(new Item({name: 'Compétences externes',type:'Environnement', commentaire: 'Dans notre écoystème, pouvons nous trouver des partenaires qui ont des compétences ?', rel: 3, ang: 3, bb: 3, extjs: 3, gxt: 1}));
+	<!--?? BB sous évalué-->
+    
+    this.items.push(new Item({name: 'Courbe d apprentissage',type:'Développement', commentaire: 'Facilité pour un nouveau de monter en compétence sur la techno.', rel: 2, ang: 4, bb: 2, extjs: 3.5, gxt: 3.5}));
+    <!--gxt ne nécessite pas de nouvelles compétences Java, mais le code est plus technique. -->
+    this.items.push(new Item({name: 'Productivité',type:'Développement', commentaire: 'Rapidité de développement une fois la techno acquise.', rel: 3, ang: 3, bb: 3, extjs: 4, gxt: 3}));
+    <!-- ?? bb et gxt se retrouvent au niveau d Angular ? -->
+    this.items.push(new Item({name: 'Structuration du code',type:'Développement', commentaire: 'Structure du code, nottement pour des raisons de maintenance et évolutions.', rel: 2, ang: 4, bb: 2.5, extjs: 5, gxt: 4}));
+    this.items.push(new Item({name: 'Intégration maven',type:'Développement', commentaire: 'Intégration à notre chaine de build. Pas nécessairement significatif pour js qui ne nécessite pas de build à propreement parler', rel: 0, ang: 3, bb: 2, extjs: 4, gxt: 4.5}));
+    this.items.push(new Item({name: 'Testabilité',type:'Développement', commentaire: 'Test unitaire et tests d intégration : infos à récuperer sur Ang et BB', rel: 2, ang: 2, bb: 2, extjs: 4, gxt: 4}));
+    this.items.push(new Item({name: 'Modularité',type:'Développement', commentaire: 'Capacité à faire de la reliv partielle au niveau de la partie html5', rel: 2, ang: 4, bb: 4, extjs: 3, gxt: 2}));
+    <!--C est surtout GXT qui a des limites ici -->
+    this.items.push(new Item({name: 'Ouverture',type:'Technique', commentaire: 'Capacité et facilité à greffer des composants externes pour des besoins fonctionnels spécifiques.', rel: 3, ang: 4, bb: 3, extjs: 4, gxt: 2}));
+    <!--?? BB est assez bas -->
+    this.items.push(new Item({name: 'Support REST/JSON',type:'Technique', commentaire: 'Facilité de mise en oeuvre des interactions client-serveur sur du rest/json', rel: 3, ang: 5, bb: 3, extjs: 5, gxt: 4}));
+    <!--?? GXT me parait très haut-->
+    this.items.push(new Item({name: 'Gestion des URLs',type:'Technique', commentaire: 'Facilité de gerer des urls propres qui permettront de faire le lien entre 2 applicatifs', rel: 3, ang: 5, bb: 3, extjs: 5, gxt: 4}));
+    this.items.push(new Item({name: 'Performances, système',type:'Technique', commentaire: 'Ressource machine sollicitée au niveau du poste client (BP, RAM, ..). Difficile a évaluer.', rel: 1, ang: 0, bb: 0, extjs: 0, gxt: 0}));
+    this.items.push(new Item({name: 'Internationalisation',type:'Technique', commentaire: 'Capacité à faire de la traduction dans le contexte VIF.', rel: 3, ang: 3, bb: 2, extjs: 4, gxt: 3}));
+    this.items.push(new Item({name: 'Compatibilité navigateurs',type:'Technique', commentaire: 'Nécessité d adapter ses devpts pour les différents navigateurs du marché.' , rel: 2, ang: 3, bb: 2, extjs: 4, gxt: 4}));
+    <!--Pour BB : tempéré étant donné l intégration nécessaire avec du code js-->
+    this.items.push(new Item({name: 'Mobilité',type:'Technique', commentaire: 'Utilisation de la techno dans un contexte de mobilité, que ce soit par du responsive design ou par du design spécifique. ', rel: 1, ang: 3, bb: 3, extjs: 4, gxt: 3}));
+      <!--placé à 3 pour ceux qui proposent HTML5 natif-->
+    
+      $(this.element).append(can.view('template', {items: this.items, totals: this.totals}));
+  },
+    
+    '.btn_more click': function (el, ev) {
+        var item = can.data(el.closest('tr'), 'item');
+        item.attr('rel', item.rel + 1);
+    },
+    '.btn_less click': function (el, ev) {
+        var item = can.data(el.closest('tr'), 'item');
+    	var n = Math.max(item.rel - 1, 0);
+        item.attr('rel', n);
+    },
+    '.btn_more click_ang': function (el, ev) {
+        var item = can.data(el.closest('tr'), 'item');
+        item.attr('ang', item.ang + 1);
+    },
+    '.btn_less click_ang': function (el, ev) {
+        var item = can.data(el.closest('tr'), 'item');
+    	var n = Math.max(item.ang - 1, 0);
+        item.attr('ang', n);
+    }
+})
+
+$(function () {
+   new Control('#app');    
+});
+</script>
+
+
+</body>
+</html>
