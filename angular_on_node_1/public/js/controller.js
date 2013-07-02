@@ -48,9 +48,21 @@ app.controller('EvaluationListCtrl', function($scope, $http, Base64) {
         $scope.message = "Status : " + status;
     });
   }
-    $scope.init();
 
-    $scope.$watch('items', function() {
+  $scope.getValues = function() {
+    $http.post('/data/findAll/JSEvaluations', {name : $scope.name}).success(function(data, status, headers, config){
+        $scope.message = "Status : " + status;
+        $scope.items = [];
+        console.log("value : ", data[0].value);
+        for (var i = 0; i < data[0].value.length;i++) {
+          $scope.items.push(data[0].value[i]);
+        }
+    });
+  }
+  
+  $scope.init();
+
+  $scope.$watch('items', function() {
     	var totalf = 0;
     	for (var item in $scope.items) {
     		totalf = totalf + ($scope.items[item].ang * $scope.items[item].rel);
